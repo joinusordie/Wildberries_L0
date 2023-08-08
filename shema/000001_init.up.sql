@@ -49,7 +49,7 @@ CREATE TABLE orders
     delivery_service varchar(255) not null,
     shardkey varchar(255) not null,
     sm_id int not null,
-    date_created timestamp not null,
+    date_created timestamptz not null,
     oof_shard varchar(255) not null,
     delivery varchar(255) references deliveries(name),
     payment varchar(255) references payments(transaction),

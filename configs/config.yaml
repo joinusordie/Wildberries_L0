@@ -5,5 +5,8 @@ db:
   host: "localhost"
   port: "5432"
   dbname: "postgres"
-  password: "qwerty"
   sslmode: "disable"
+
+nats:
+ nats_subj = "orders"
+ nats_clusterID = "test-cluster"
