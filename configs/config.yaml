@@ -8,5 +8,8 @@ db:
   sslmode: "disable"
 
 nats:
- nats_subj = "orders"
- nats_clusterID = "test-cluster"
+  serverURL: "nats://localhost:4222"
+  clusterID: "test-cluster"
+  Producer: "producer"
+  Subscriber: "subscriber"
+  subject: "model"

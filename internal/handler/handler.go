@@ -20,7 +20,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	router.GET("/:order_uid", h.getOrderById)
 	router.POST("/", h.addOrder)
-	router.GET("/", h.getCache)
 
 	return router
 }

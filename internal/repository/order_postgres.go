@@ -9,7 +9,6 @@ import (
 
 type OrderPostgres struct {
 	db    *sqlx.DB
-	cache map[string]*models.Order
 }
 
 func NewOrderPostgres(db *sqlx.DB) *OrderPostgres {
@@ -18,57 +17,49 @@ func NewOrderPostgres(db *sqlx.DB) *OrderPostgres {
 
 func (r *OrderPostgres) AddOrder(order models.Order) error {
 
-	_, err := r.db.Exec(
-		"INSERT INTO orders VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)",
-		order.OrderUid,
-		order.TrackNumber,
+	addOrderQuery := fmt.Sprintf("INSERT INTO %s (model) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)",
+	orderTable)
+
+	_, err := r.db.Exec(addOrderQuery, 
+		order.Order_uid,
+		order.Track_number,
 		order.Entry,
 		order.Delivery,
 		order.Payment,
 		order.Items,
 		order.Locale,
-		order.InternalSignature,
-		order.CustomerId,
-		order.DeliveryService,
-		order.ShardKey,
-		order.SmId,
-		order.DateCreated,
-		order.OofShard,
-	)
-	if err != nil {
-		return err
-	}
-
-	r.cache[order.OrderUid] = &order
-
-	return nil
-}
-
-func (r *OrderPostgres) GetCache() error {
-	var orders []models.Order
-
-	query := fmt.Sprintf(`SELECT * FROM %s`, orderTable)
-	err := r.db.Select(&orders, query)
-
+		order.Internal_signature,
+		order.Customer_id,
+		order.Delivery_service,
+		order.Shardkey,
+		order.Sm_id,
+		order.Date_created,
+		order.Oof_shard)
+	
 	return err
 }
 
-func (r *OrderPostgres) GetOrderById(orderUID string) (*models.Order, error) {
-	if _, ok := r.cache[orderUID]; ok {
-		return r.cache[orderUID], nil
+func (r *OrderPostgres) GetById(orderUID string) (*models.Order, error) {
+	getOrderQuery := fmt.Sprintf("SELECT * FROM %s WHERE order_uid'= $1", orderTable)
+
+	var order models.Order
+	
+	err := r.db.QueryRow(getOrderQuery, orderUID).Scan(&order)
+	if err != nil {
+		return nil, err 
 	}
 
-	order := &models.Order{}
-	if err := r.db.QueryRowx(
-		"SELECT * FROM orders WHERE order_uid = $1",
-		orderUID,
-	).StructScan(
-		order,
-	); err != nil {
+	return &order, nil
+}
+
+func (r *OrderPostgres) GetAll() (*[]models.Order, error) {
+	getAllOrderQuery := fmt.Sprintf("SELECT * FROM %s", orderTable)
+	var order []models.Order
+
+	err := r.db.Select(&order, getAllOrderQuery)
+	if err != nil {
 		return nil, err
 	}
 
-	r.cache[order.OrderUid] = order
-
-	return order, nil
+	return &order, nil
 }

@@ -6,9 +6,9 @@ import (
 )
 
 type Order interface {
-	AddOrder(models.Order) error
-	GetOrderById(string) (models.Order, error)
-	GetCache() error
+	AddOrder(order models.Order) error
+	GetById(orderUID string) (*models.Order, error)
+	GetAll() (*[]models.Order, error)
 }
 
 type Repository struct {
@@ -16,5 +16,7 @@ type Repository struct {
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
-	return &Repository{}
+	return &Repository{
+		Order: NewOrderPostgres(db),
+	}
 }

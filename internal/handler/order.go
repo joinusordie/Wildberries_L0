@@ -11,7 +11,7 @@ func (h *Handler) getOrderById(c *gin.Context) {
 
 	id := c.Param("id")
 
-	list, err := h.services.Order.GetOrderById(id)
+	list, err := h.services.Order.GetById(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -20,16 +20,6 @@ func (h *Handler) getOrderById(c *gin.Context) {
 	c.JSON(http.StatusOK, list)
 }
 
-func (h *Handler) getCache(c *gin.Context) {
-
-	err := h.services.Order.GetCache()
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	c.JSON(http.StatusOK, "OK")
-}
 
 func (h *Handler) addOrder(c *gin.Context) {
 	var input models.Order

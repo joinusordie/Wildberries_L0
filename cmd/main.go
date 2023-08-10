@@ -6,6 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/nats-io/stan.go"
 
 	l0 "github.com/joinusordie/Wildberries_L0"
 	"github.com/joinusordie/Wildberries_L0/internal/handler"
@@ -16,6 +17,7 @@ import (
 )
 
 func main() {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := InitConfig(); err != nil {
 		log.Fatalf("error initializing configs: %s", err.Error())
 	}
@@ -36,6 +38,9 @@ func main() {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
+	sc, _ := stan.Connect(viper.GetString("nats.clusterID"), viper.GetString("nats.Subscriber"), stan.NatsURL(viper.GetString("nats.serverURL")))
+	defer sc.Close()
+	
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
@@ -45,9 +50,7 @@ func main() {
 		log.Fatalf("error occured while running http server: %s", err.Error())
 	}
 
-	if l0.NatsServer("nats://localhost:4222", *services, viper.GetString("nats.nats_clusterID"), viper.GetString("nats.nats_subj")); err != nil {
-		log.Fatal("error occured while running nats server")
-	}
+	
 }
 
 func InitConfig() error {
