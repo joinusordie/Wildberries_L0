@@ -18,7 +18,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 	router.Use(cors.Default())
 
-	router.GET("/:order_uid", h.getOrderById)
+	router.GET("/:order_uid", h.getOrderByIdFromCache)
+	router.GET("/", h.getAllOrderFromCache)
 	router.POST("/", h.addOrder)
 
 	return router

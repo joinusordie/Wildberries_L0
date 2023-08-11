@@ -7,19 +7,34 @@ import (
 	"github.com/joinusordie/Wildberries_L0/internal/models"
 )
 
-func (h *Handler) getOrderById(c *gin.Context) {
+type getAllModelResponse struct {
+	Data *[]models.Order `json:"data"`
+}
 
-	id := c.Param("id")
+func (h *Handler) getOrderByIdFromCache(c *gin.Context) {
 
-	list, err := h.services.Order.GetById(id)
+	id := c.Param("order_uid")
+
+	order, err := h.services.Order.GetOrderFromCacheById(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, list)
+	c.JSON(http.StatusOK, order)
 }
 
+func (h *Handler) getAllOrderFromCache(c *gin.Context) {
+	orders, err := h.services.Order.GetAllFromCache()
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, getAllModelResponse{
+		Data: orders,
+	})
+}
 
 func (h *Handler) addOrder(c *gin.Context) {
 	var input models.Order
@@ -29,8 +44,7 @@ func (h *Handler) addOrder(c *gin.Context) {
 		return
 	}
 
-	err := h.services.Order.AddOrder(input)
-	if err != nil {
+	if err := h.services.AddOrder(input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
