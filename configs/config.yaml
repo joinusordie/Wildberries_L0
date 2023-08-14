@@ -3,7 +3,7 @@ port: "8000"
 db:
   username: "postgres"
   host: "localhost"
-  port: "5432"
+  port: "5437"
   dbname: "postgres"
   sslmode: "disable"
 
@@ -12,4 +12,4 @@ nats:
   clusterID: "test-cluster"
   Producer: "producer"
   Subscriber: "subscriber"
-  subject: "model"
+  subject: "order"
