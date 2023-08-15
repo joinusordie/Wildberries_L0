@@ -17,9 +17,8 @@ func NewOrderPostgres(db *sqlx.DB) *OrderPostgres {
 
 func (r *OrderPostgres) AddOrder(order models.Order) error {
 
-	addOrderQuery := fmt.Sprintf("INSERT INTO %s (model) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)",
+	addOrderQuery := fmt.Sprintf("INSERT INTO %s VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)",
 	orderTable)
-
 	_, err := r.db.Exec(addOrderQuery, 
 		order.OrderUid,
 		order.TrackNumber,
@@ -31,11 +30,10 @@ func (r *OrderPostgres) AddOrder(order models.Order) error {
 		order.InternalSignature,
 		order.CustomerId,
 		order.DeliveryService,
-		order.Shardkey,
+		order.ShardKey,
 		order.SmId,
 		order.DateCreated,
 		order.OofShard)
-	
 	return err
 }
 
@@ -53,12 +51,18 @@ func (r *OrderPostgres) GetById(orderUID string) (*models.Order, error) {
 }
 
 func (r *OrderPostgres) GetAll() (*[]models.Order, error) {
-	getAllOrderQuery := fmt.Sprintf("SELECT * FROM %s", orderTable)
-	var order []models.Order
-	err := r.db.Select(&order, getAllOrderQuery)
+	rows, err := r.db.Queryx("SELECT * FROM orders")
 	if err != nil {
 		return nil, err
 	}
+	var res []models.Order
+	for rows.Next() {
+		var order models.Order
+		if err:= rows.StructScan(&order); err != nil {
+			return nil, err
+		}
+		res = append(res, order)
+	}
 
-	return &order, nil
+	return &res, nil
 }

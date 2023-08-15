@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joinusordie/Wildberries_L0/internal/service"
@@ -16,10 +18,11 @@ func NewHandler(services *service.Service) *Handler {
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
+	router.StaticFS("/static", http.Dir("./static"))
 	router.Use(cors.Default())
 
 	router.GET("/:order_uid", h.getOrderByIdFromCache)
-	router.GET("/", h.getAllOrderFromCache)
+	router.GET("/", h.handleIndex)
 	router.POST("/", h.addOrder)
 
 	return router

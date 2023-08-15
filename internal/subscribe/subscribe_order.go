@@ -2,7 +2,6 @@ package subscribe
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/joinusordie/Wildberries_L0/internal/models"
 	"github.com/nats-io/stan.go"
@@ -11,11 +10,10 @@ import (
 )
 
 func (s *Subscribe) getOrder() {
-	s.sc.Subscribe(viper.GetString("nats.subject"), s.msgHandler, stan.DurableName(viper.GetString("nats.subscriber")))
+	s.sc.Subscribe(viper.GetString("nats.subject"), s.msgHandler)
 }
 
 func (s *Subscribe) msgHandler(msg *stan.Msg) {
-	fmt.Println("SSSSSSSSSSSSSSSS")
 	var order models.Order
 	if err := json.Unmarshal(msg.Data, &order); err != nil {
 		logrus.Errorf("error parse order from subcribe: %s", err.Error())

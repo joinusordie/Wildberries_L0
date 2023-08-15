@@ -8,51 +8,20 @@ import (
 )
 
 type Order struct {
-	OrderUid    string `json:"order_uid" binding:"required"`
-	TrackNumber string `json:"track_number" binding:"required"`
-	Entry        string `json:"entry" binding:"required"`
-	Delivery     struct {
-		Name    string `json:"name" binding:"required"`
-		Phone   string `json:"phone" binding:"required"`
-		Zip     string `json:"zip" binding:"required"`
-		City    string `json:"city" binding:"required"`
-		Address string `json:"address" binding:"required"`
-		Region  string `json:"region" binding:"required"`
-		Email   string `json:"email" binding:"required"`
-	} `json:"delivery" binding:"required"`
-	Payment struct {
-		Transaction   string `json:"transaction" binding:"required"`
-		RequestId    string `json:"request_id"`
-		Currency      string `json:"currency" binding:"required"`
-		Provider      string `json:"provider" binding:"required"`
-		Amount        int    `json:"amount" binding:"required"`
-		PaymentDt    int    `json:"payment_dt" binding:"required"`
-		Bank          string `json:"bank" binding:"required"`
-		DeliveryCost int    `json:"delivery_cost" binding:"required"`
-		GoodsTotal   int    `json:"goods_total" binding:"required"`
-		CustomFee    int    `json:"custom_fee"`
-	} `json:"payment" binding:"required"`
-	Items []struct {
-		ChrtId      int    `json:"chrt_id" binding:"required"`
-		TrackNumber string `json:"track_number" binding:"required"`
-		Price        int    `json:"price" binding:"required"`
-		Rid          string `json:"rid" binding:"required"`
-		Name         string `json:"name" binding:"required"`
-		Sale         int    `json:"sale" binding:"required"`
-		Size         string `json:"size" binding:"required"`
-		TotalPrice  int    `json:"total_price" binding:"required"`
-		Nm_id        int    `json:"nm_id" binding:"required"`
-		Brand        string `json:"brand" binding:"required"`
-		Status       int    `json:"status" binding:"required"`
-	} `json:"items" binding:"required"`
-	Locale             string `json:"locale" binding:"required"`
-	InternalSignature string `json:"internal_signature"`
-	CustomerId        string `json:"customer_id" binding:"required"`
-	DeliveryService   string `json:"delivery_service" binding:"required"`
-	Shardkey           string `json:"shardkey" binding:"required"`
-	SmId              int    `json:"sm_id" binding:"required"`
-	DateCreated       time.Time `json:"date_created" binding:"required"`
-	OofShard          string `json:"oof_shard" binding:"required"`
+	OrderUid          string    `json:"order_uid" db:"order_uid"`
+	TrackNumber       string    `json:"track_number" db:"track_number"`
+	Entry             string    `json:"entry" db:"entry"`
+	Delivery          Delivery  `json:"delivery" db:"delivery"`
+	Payment           Payment   `json:"payment" db:"payment"`
+	Items             Items    `json:"items" db:"items"`
+	Locale            string    `json:"locale" db:"locale"`
+	InternalSignature string    `json:"internal_signature" db:"internal_signature"`
+	CustomerId        string    `json:"customer_id" db:"customer_id"`
+	DeliveryService   string    `json:"delivery_service" db:"delivery_service"`
+	ShardKey          string    `json:"shardkey" db:"shardkey"`
+	SmId              int       `json:"sm_id" db:"sm_id"`
+	DateCreated       time.Time `json:"date_created" db:"date_created"`
+	OofShard          string    `json:"oof_shard" db:"oof_shard"`
 }
 
 func (o *Order) Scan(value interface{}) error {

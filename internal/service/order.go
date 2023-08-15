@@ -4,6 +4,7 @@ import (
 	"github.com/joinusordie/Wildberries_L0/internal/cache"
 	"github.com/joinusordie/Wildberries_L0/internal/models"
 	"github.com/joinusordie/Wildberries_L0/internal/repository"
+	"github.com/sirupsen/logrus"
 )
 
 type OrderService struct {
@@ -37,16 +38,16 @@ func (s *OrderService) GetById(orderUID string) (*models.Order, error) {
 }
 
 func (s *OrderService) AddAllInCache() error {
-	//orders, err := s.GetAll()
-	//if err != nil {
-	//	logrus.Error(err.Error())
-	//	return err
-	//}
-	//err = s.cache.AddAll(orders)
-	//if err != nil {
-	//	logrus.Error(err.Error())
-	//	return err
-	//}
+	orders, err := s.GetAll()
+	if err != nil {
+		logrus.Error(err.Error())
+		return err
+	}
+	err = s.cache.AddAll(orders)
+	if err != nil {
+		logrus.Error(err.Error())
+		return err
+	} 
 	return nil
 }
 
