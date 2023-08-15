@@ -10,6 +10,6 @@ db:
 nats:
   serverURL: "nats://localhost:4222"
   clusterID: "test-cluster"
-  Producer: "producer"
-  Subscriber: "subscriber"
+  producer: "producer"
+  subscriber: "subscriber"
   subject: "order"

@@ -33,7 +33,7 @@ func (c *CacheOrder) GetAll() (*[]models.Order, error) {
 
 func (c *CacheOrder) GetById(orderUID string) (*models.Order, error) {
 	for _, order := range *c.order {
-		if order.Order_uid == orderUID {
+		if order.OrderUid == orderUID {
 			return &order, nil
 		}
 	}

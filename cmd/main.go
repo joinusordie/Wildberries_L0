@@ -13,7 +13,7 @@ import (
 	"github.com/joinusordie/Wildberries_L0/internal/handler"
 	"github.com/joinusordie/Wildberries_L0/internal/repository"
 	"github.com/joinusordie/Wildberries_L0/internal/service"
-	subscription "github.com/joinusordie/Wildberries_L0/internal/subscribe"
+	"github.com/joinusordie/Wildberries_L0/internal/subscribe"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -40,24 +40,25 @@ func main() {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
-	sc, _ := stan.Connect(viper.GetString("nats.clusterID"), viper.GetString("nats.Subscriber"), stan.NatsURL(viper.GetString("nats.serverURL")))
+	sc, _ := stan.Connect(viper.GetString("nats.clusterID"), viper.GetString("nats.subscriber"), stan.NatsURL(viper.GetString("nats.serverURL")))
 	defer sc.Close()
 	
 	repos := repository.NewRepository(db)
 	cache := cache.NewCache()
 	services := service.NewService(repos, cache)
+	
+	if err = services.AddAllInCache(); err != nil {
+		logrus.Fatalf("failed to load cache from db")
+	}
+
 	handlers := handler.NewHandler(services)
+
+	subscribe.NewSubscribe(sc, services)
 
 	srv := new(l0.Server)
 	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
 		log.Fatalf("error occured while running http server: %s", err.Error())
 	}
-
-	if err = services.AddAllInCache(); err != nil {
-		logrus.Fatalf("failed to load cache from db")
-	}
-
-	subscription.NewSubscription(sc, services)
 	
 }
 

@@ -10,15 +10,15 @@ type Subscribe struct {
 	services *service.Service
 }
 
-func NewSubscription(sc stan.Conn, services *service.Service) *Subscribe {
-	st := &Subscribe {
-		sc : sc,
+func NewSubscribe(sc stan.Conn, services *service.Service) *Subscribe {
+	st := &Subscribe{
+		sc: sc,
 		services: services,
 	}
 	st.Subscribing()
 	return st
 }
 
-func (s *Subscribe) Subscribing () {
+func (s *Subscribe) Subscribing() {
 	s.getOrder()
 }

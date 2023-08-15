@@ -21,20 +21,20 @@ func (r *OrderPostgres) AddOrder(order models.Order) error {
 	orderTable)
 
 	_, err := r.db.Exec(addOrderQuery, 
-		order.Order_uid,
-		order.Track_number,
+		order.OrderUid,
+		order.TrackNumber,
 		order.Entry,
 		order.Delivery,
 		order.Payment,
 		order.Items,
 		order.Locale,
-		order.Internal_signature,
-		order.Customer_id,
-		order.Delivery_service,
+		order.InternalSignature,
+		order.CustomerId,
+		order.DeliveryService,
 		order.Shardkey,
-		order.Sm_id,
-		order.Date_created,
-		order.Oof_shard)
+		order.SmId,
+		order.DateCreated,
+		order.OofShard)
 	
 	return err
 }
@@ -55,7 +55,6 @@ func (r *OrderPostgres) GetById(orderUID string) (*models.Order, error) {
 func (r *OrderPostgres) GetAll() (*[]models.Order, error) {
 	getAllOrderQuery := fmt.Sprintf("SELECT * FROM %s", orderTable)
 	var order []models.Order
-
 	err := r.db.Select(&order, getAllOrderQuery)
 	if err != nil {
 		return nil, err
