@@ -11,9 +11,9 @@ type Order struct {
 	OrderUid          string    `json:"order_uid" db:"order_uid"`
 	TrackNumber       string    `json:"track_number" db:"track_number"`
 	Entry             string    `json:"entry" db:"entry"`
-	Delivery          Delivery  `json:"delivery" db:"delivery"`
-	Payment           Payment   `json:"payment" db:"payment"`
-	Items             Items    `json:"items" db:"items"`
+	Delivery          []byte  `json:"delivery" db:"delivery"`
+	Payment           []byte  `json:"payment" db:"payment"`
+	Items             []byte    `json:"items" db:"items"`
 	Locale            string    `json:"locale" db:"locale"`
 	InternalSignature string    `json:"internal_signature" db:"internal_signature"`
 	CustomerId        string    `json:"customer_id" db:"customer_id"`
